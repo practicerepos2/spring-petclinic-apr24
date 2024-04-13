@@ -1,0 +1,22 @@
+pipeline{
+    agent{
+        label "spc"
+    }
+    stages{
+        stage("git"){
+            steps{
+                git url: 'https://github.com/practicerepos2/spring-petclinic-apr24.git' ,
+                branch: "main"
+            }
+        }
+        stage("build"){
+            steps{
+                mail bcc: '', body: 'Build Started', cc:'', from: '', replyTo: '', subject: 'Build Started', to: 'all@rajtech.io'
+                sh "mvn clean package"
+                junit testResults:'**/surefire-reports/*.xml'
+                archive '**/target/spring-petclinic-*.jar'
+                mail bcc: '', body: 'Build Completed', cc: '', from: '', replyTo: '', subject: 'Build completed', to: 'all@rajtech.io'
+            }
+        }
+    }
+}   
