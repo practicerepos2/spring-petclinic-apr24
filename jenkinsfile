@@ -17,11 +17,10 @@ pipeline{
         }
         stage("build"){
             steps{
-                mail bcc: '', body: 'Build Started', cc:'', from: '', replyTo: '', subject: 'Build Started', to: 'all@rajtech.io'
                 sh "mvn ${params.Maven_Goal}"
                 junit testResults:'**/surefire-reports/*.xml'
                 archive '**/target/spring-petclinic-*.jar'
-                mail bcc: '', body: 'Build Completed', cc: '', from: '', replyTo: '', subject: 'Build completed', to: 'all@rajtech.io'
+                
             }
         }
     }
