@@ -2,9 +2,6 @@ pipeline{
     agent{
         label "spc"
     }
-    parameters{
-        choice(name: "Maven_Goal", choices:['package','clean package'] )
-    }
     stages{
         stage("git"){
             steps{
@@ -14,10 +11,30 @@ pipeline{
         }
         stage("build"){
             steps{
-                sh "mvn ${params.Maven_Goal}"
+                mail bcc: '', body: 'Build Started', cc:'', from: '', replyTo: '', subject: 'Build Started', to: 'all@rajtech.io'
+                sh "mvn clean package"
                 junit testResults:'**/surefire-reports/*.xml'
                 archive '**/target/spring-petclinic-*.jar'
-                
+                mail bcc: '', body: 'Build Started', cc:'', from: '', replyTo: '', subject: 'Build Started', to: 'all@rajtech.io'
+            }
+            post{
+                failure{
+                    mail bcc:"all@rajtech.io",
+                         from:"jenkins@rajtech.io",
+                         to:"dev@rajtech.io",
+                         subject: "Build of ${JOB_BASE_NAME} with build ${BUILD_ID} is Failed",
+                         body: "Refer to ${RUN_DISPLAY_URL} for more info"
+
+                }
+                success{
+                    mail bcc:"all@rajtech.io",
+                         from:"jenkins@rajtech.io",
+                         to:"dev@rajtech.io",
+                         subject: "Build of ${JOB_BASE_NAME} with build ${BUILD_ID} is Success",
+                         body: "Refer to ${RUN_DISPLAY_URL} for more info"
+
+
+                }
             }
         }
     }
