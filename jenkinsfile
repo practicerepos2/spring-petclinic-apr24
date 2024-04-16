@@ -5,9 +5,6 @@ pipeline{
     parameters{
         choice(name: "Maven_Goal", choices:['package','clean package'] )
     }
-    triggers{
-        pollSCM('* * * * *')
-    }
     stages{
         stage("git"){
             steps{
